@@ -6,8 +6,7 @@ import sys
 import os
 import ast
 import gc
-import uuid # Benzersiz dosya isimleri için eklendi
-
+import uuid 
 # GPU memory cleanup utility
 def cleanup_gpu_memory():
     try:
@@ -291,18 +290,18 @@ def solve_ode_func_en(func_str, y0_str, t_str, ode_method):
             except Exception as e:
                 raise ValueError(f"Error evaluating ODE function string: {e}")
 
-        # CPU ve GPU çıktılarını alma
+        # Take CPU and GPU output
         cpu_output = run_and_measure(odeint_wrapper, ode_func_wrapper, y0, t, use_gpu=False, method=ode_method)
         gpu_output = run_and_measure(odeint_wrapper, ode_func_wrapper, y0, t, use_gpu=True, method=ode_method)
 
-        # Sonuçları ve zamanları ayırma, hata durumlarını ele alma
+        # Separating results and times, handling error cases
         cpu_solution = cpu_output[0] if isinstance(cpu_output, tuple) else cpu_output
         cpu_time = cpu_output[1] if isinstance(cpu_output, tuple) else 0
 
         gpu_solution = gpu_output[0] if isinstance(gpu_output, tuple) else gpu_output
         gpu_time = gpu_output[1] if isinstance(gpu_output, tuple) else 0
         
-        # Eğer çözüm bir hata mesajı stringi ise grafik çizme
+        # If the solution is an error message string, plot the graph
         if isinstance(cpu_solution, str) or isinstance(gpu_solution, str):
             error_message = f"CPU Solution Error: {cpu_solution}\nGPU Solution Error: {gpu_solution}"
             return error_message, None
@@ -330,17 +329,17 @@ def solve_ode_func_en(func_str, y0_str, t_str, ode_method):
         plt.grid(True, alpha=0.3)
         plt.tight_layout()
         
-        # Benzersiz dosya adı oluşturuldu
+        # Unique file name generated
         plot_path = f"ode_solution_plot_{uuid.uuid4()}.png"
         
-        # Olası senkronizasyon için kısa bir bekleme (opsiyonel, denemek isterseniz yorumdan çıkarın)
-        # time.sleep(0.1) 
+ 
         
         plt.savefig(plot_path, dpi=150, bbox_inches='tight')
         plt.close() # Figure'ı kapatmak önemli
         
-        # n_show değişkenini tanımla
-        # n_show sadece diziler için anlamlıdır, stringler için değil
+        #Define the variable n_show
+
+        # n_show is only meaningful for arrays, not strings
         if isinstance(cpu_solution, np.ndarray):
             n_show = min(5, len(cpu_solution)) 
         else:
@@ -380,7 +379,7 @@ def solve_ode_func_en(func_str, y0_str, t_str, ode_method):
     except Exception as e:
         return f"Error: {e}", None
 
-# --- Root Finding Tab --- (Değişmedi)
+# --- Root Finding Tab --- 
 def find_root_func_en(func_str, df_str, a, b, x0, method, tol, max_iter):
     try:
         if not func_str.strip():
@@ -407,7 +406,7 @@ def find_root_func_en(func_str, df_str, a, b, x0, method, tol, max_iter):
     except Exception as e:
         return f"Error: {e}"
 
-# --- Optimization Tab --- (Değişmedi)
+# --- Optimization Tab --- 
 def optimize_func_en(func_str, x0_str, opt_type, opt_method):
     try:
         if not func_str.strip():
@@ -446,7 +445,7 @@ def optimize_func_en(func_str, x0_str, opt_type, opt_method):
     except Exception as e:
         return f"Error: {e}"
 
-# --- Gradio Interface Configuration --- (Değişmedi)
+# --- Gradio Interface Configuration --- 
 with gr.Blocks(title="GPUPy Numerical Methods Library", theme=gr.themes.Soft()) as demo:
     gr.Markdown(
         """
