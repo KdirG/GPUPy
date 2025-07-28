@@ -95,6 +95,4 @@ Add your feature or fix
 
 Submit a PR 🚀
 
-📜 License
-MIT License. See LICENSE for more details.
 
